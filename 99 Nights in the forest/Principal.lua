@@ -154,23 +154,23 @@ PlayerTab:AddToggle("",{
     Default = _G.WalkSpeedToggle,
     Callback = function(v)
         _G.WalkSpeedToggle = v
-        local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-        if v then
-            if humanoid then
-                _G.nwsp = humanoid.WalkSpeed
-            end
-            task.spawn(function()
-                while _G.WalkSpeedToggle do
-                    task.wait(0.025)
-                    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
-                    end
-                end
-            end)
-        else
+        if not v then
+            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
             if humanoid then
                 humanoid.WalkSpeed = _G.nwsp
             end
         end
     end
 })
+
+task.spawn(function()
+    while true do
+        task.wait(0.025)
+        if _G.WalkSpeedToggle then
+            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = _G.WalkSpeed
+            end
+        end
+    end
+end)
