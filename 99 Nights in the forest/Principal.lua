@@ -631,8 +631,8 @@ espdownMobs:OnChanged(function(val)
 end)
 
 EspTab:AddButton({
-	Title = "Adicionar esp",
-	Description = "Adiciona os itens e mobs selecionados em esp",
+	Title = "Add esp",
+	Description = "Adds the selected items and mobs in esp",
 	Callback = function()
 		for _, i in vde do
 			Aesp(i, "item")
@@ -647,7 +647,7 @@ EspTab:AddButton({
 _G.aae = false
 EspTab:AddToggle("", {
     Title = "Auto add esp", 
-    Description = "Adiciona ESP automaticamente aos itens e mobs spawnados",
+    Description = "Automatically adds ESP to spawned items and mobs",
     Default = false,
     Callback = function(a)
         _G.aae = a
@@ -677,8 +677,8 @@ EspTab:AddToggle("", {
 })
 
 espTab:AddButton({
-	Title = "Remover esp",
-	Description = "Remove todos esp dos itens e mobs",
+	Title = "Remove esp ",
+	Description = "Removes all esp from items and mobs ",
 	Callback = function()
 		for _, i in vde do
 			Desp(i, "item")
