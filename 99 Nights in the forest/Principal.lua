@@ -136,6 +136,13 @@ local armasValidas = {
     ["Poison Spear"] = true
 }
 
+
+local itensEsp = {"A"}
+
+
+local mobEsp = {"A"}
+
+
 _G.WalkSpeedToggle = false
 _G.WalkSpeed = 50
 _G.nwsp = 20
