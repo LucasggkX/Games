@@ -525,7 +525,6 @@ local function ESP(tipo, nome, ativar)
     else
         return
     end
-
     if not workspacePath then return end
 
     for _, obj in pairs(workspacePath:GetChildren()) do
@@ -568,14 +567,10 @@ local function ESP(tipo, nome, ativar)
                     billboard.Parent = obj
 
                     task.spawn(function()
-                        while text.Parent do
-                            if obj.Parent then
-                                local distance = (Camera.CFrame.Position - obj.Position).Magnitude
-                                local scale = math.clamp(30 / distance, 0.5, 1.5)
-                                text.TextSize = 14 * scale
-                            else
-                                break
-                            end
+                        while text.Parent and obj.Parent do
+                            local distance = (Camera.CFrame.Position - obj.Position).Magnitude
+                            local scale = math.clamp(30 / distance, 0.5, 1.5)
+                            text.TextSize = 14 * scale
                             task.wait(0.05)
                         end
                     end)
@@ -589,11 +584,10 @@ local function ESP(tipo, nome, ativar)
 end
 
 local function RemoveAllESP()
-    local paths = {"Characters", "Items"}
-    for _, pathName in pairs(paths) do
+    for _, pathName in ipairs({"Characters","Items"}) do
         local workspacePath = workspace:FindFirstChild(pathName)
         if workspacePath then
-            for _, obj in pairs(workspacePath:GetChildren()) do
+            for _, obj in ipairs(workspacePath:GetChildren()) do
                 local espBox = obj:FindFirstChild("ESP_Box")
                 local espLabel = obj:FindFirstChild("ESP_Label")
                 if espBox then espBox:Destroy() end
@@ -609,25 +603,25 @@ local mobEsp = {"Wolf","Alpha Wolf","Bear","Alpha Bear","Cultist","Crossbow Cult
 local selectedItems = {}
 local selectedMobs = {}
 
-local itemDropdown = Tab:AddDropdown("", {
+local itemDropdown = EspTab:AddDropdown("", {
     Title = "Select Item Esp",
     Description = "",
     Values = itensEsp,
     Multi = true,
     Default = {},
-    Callback = function(values)
-        selectedItems = values
+    Callback = function(v)
+        selectedItems = v
     end
 })
 
-local mobDropdown = Tab:AddDropdown("", {
+local mobDropdown = EspTab:AddDropdown("", {
     Title = "Select Mob Esp",
     Description = "",
     Values = mobEsp,
     Multi = true,
     Default = {},
-    Callback = function(values)
-        selectedMobs = values
+    Callback = function(v)
+        selectedMobs = v
     end
 })
 
@@ -644,11 +638,11 @@ task.spawn(function()
     while true do
         task.wait(0.1)
         if _G.Esptoggle then
-            for _, i in ipairs(selectedItems) do
-                ESP("Item", i, true)
+            for _, itemName in ipairs(selectedItems) do
+                ESP("Item", itemName, true)
             end
-            for _, i in ipairs(selectedMobs) do
-                ESP("Mob", i, true)
+            for _, mobName in ipairs(selectedMobs) do
+                ESP("Mob", mobName, true)
             end
         end
     end
@@ -657,11 +651,9 @@ end)
 EspTab:AddButton({
     Title = "Remove ESPs",
     Callback = function()
+        RemoveAllESP()
         selectedItems = {}
         selectedMobs = {}
-        itemDropdown:SetValues({})
-        mobDropdown:SetValues({})
         espToggle:SetValue(false)
-        RemoveAllESP()
     end
 })
