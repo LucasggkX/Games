@@ -9,11 +9,11 @@ local Window = l:CreateWindow({
     Acrylic = false,
     Theme = "Dark",
 })
-wait(0.1)
+task.wait(0.1)
 
 l:Destroy()
 
-wait(0.1)
+task.wait(0.1)
 game:GetService("StarterGui"):SetCore("SendNotification", {Title="script loaded...", Text="Made by Lucas", Duration=5})
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
@@ -119,16 +119,14 @@ task.spawn(function()
     end
 end)
 
---[[ ============================ SCRIPT ============================ ]]--
-
 _G.WalkSpeedToggle = false
 _G.WalkSpeed = 50
-_G.nwsp = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
+_G.nwsp = game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed
 
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
 
 local input
-Input = PlayerTab:AddInput("Input", {
+input = PlayerTab:AddInput("Input", {
     Title = "Set WalkSpeed",
     Description = "",
     Default = "",
@@ -136,16 +134,18 @@ Input = PlayerTab:AddInput("Input", {
     Numeric = true,
     Finished = false, 
     Callback = function(Value)
-		if Value > 150 then
-			input:SetValue(150)
-            _G.WalkSpeed = 150
-		  elseif Value < 30 then
-			input:SetValue(30)
-            _G.WalkSpeed = 30
-		  else
-			_G.WalkSpeed = Value
-		end
+    local num = tonumber(Value)
+    if not num then return end
+    if num > 150 then
+        input:SetValue(150)
+        _G.WalkSpeed = 150
+    elseif num < 30 then
+        input:SetValue(30)
+        _G.WalkSpeed = 30
+    else
+        _G.WalkSpeed = num
     end
+end
 })
 
 PlayerTab:AddToggle("",{
@@ -158,11 +158,15 @@ PlayerTab:AddToggle("",{
 				task.spawn(function()
 					while _G.WalkSpeedToggle do
 						task.wait(0.025)
-						game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
+						if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+							game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
+						end
 					end
 				end)
 			else
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.nwsp
+				if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+					game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.nwsp
+				end
 			end
 		end
 	})
