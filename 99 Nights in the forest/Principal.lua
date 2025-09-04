@@ -132,7 +132,7 @@ input = PlayerTab:AddInput("Input", {
     Default = "",
     Placeholder = "Set WalkSpeed 30~150",
     Numeric = true,
-    Finished = false, 
+    Finished = true, 
     Callback = function(Value)
     local num = tonumber(Value)
     if not num then return end
@@ -149,24 +149,28 @@ end
 })
 
 PlayerTab:AddToggle("",{
-		Title = "Activate WalkSpeed",
-		Description = "activate WalkSpeed",
-		Default = _G.WalkSpeedToggle,
-		Callback = function(v)
-			_G.WalkSpeedToggle = v
-			if v then
-				task.spawn(function()
-					while _G.WalkSpeedToggle do
-						task.wait(0.025)
-						if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-							game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
-						end
-					end
-				end)
-			else
-				if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-					game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.nwsp
-				end
-			end
-		end
-	})
+    Title = "Activate WalkSpeed",
+    Description = "activate WalkSpeed",
+    Default = _G.WalkSpeedToggle,
+    Callback = function(v)
+        _G.WalkSpeedToggle = v
+        local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        if v then
+            if humanoid then
+                _G.nwsp = humanoid.WalkSpeed
+            end
+            task.spawn(function()
+                while _G.WalkSpeedToggle do
+                    task.wait(0.025)
+                    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
+                    end
+                end
+            end)
+        else
+            if humanoid then
+                humanoid.WalkSpeed = _G.nwsp
+            end
+        end
+    end
+})
