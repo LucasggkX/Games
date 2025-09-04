@@ -599,3 +599,76 @@ local function RemoveAllESP()
     end
 end
 
+local itensEsp = {
+    "Log", "Chair", "Biofuel", "Coal", "Fuel Canister", "Oil Barrel", "Cultist Corpse", "Crossbow Cultist Corpse", "Juggernaut Cultist Corpse", "Alien Corpse", "Elite Alien Corpse", "Wolf Corpse", "Alpha Wolf Corpse", "Bear Corpse",  -- Combustível
+    "Carrot", "Corn", "Pumpkin", "Berry", "Apple", "Morsel", "Steak", "Ribs", "Cake", "Chili", "Stew", "Hearty Stew", "Meat? Sandwich", "Mackerel", "Salmon", "Clownfish", "Jellyfish", "Char", "Eel", "Swordfish", "Shark", "Chili Seeds", "Flower Seeds", "Berry Seeds", "Firefly Seeds",  -- Comida / sementes
+    "Old Sack", "Good Sack", "Giant Sack",  -- Sacks
+    "Old Axe", "Good Axe", "Ice Axe", "Strong Axe", "Chainsaw", "Admin Axe", "Old Rod", "Good Rod", "Strong Rod",  -- Ferramentas
+    "Spear", "Morningstar", "Katana", "Laser Sword", "Ice Sword", "Trident", "Poison Spear", "Revolver", "Rifle", "Tactical Shotgun", "Snowball", "Frozen Shuriken", "Kunai", "Ray Gun", "Laser Cannon", "Flamethrower", "Blowpipe", "Admin Gun", "Friendly Gun", "Shotgun Ammo", "Rifle Ammo", "Revolver Ammo",  -- Armas
+    "Leather Body", "Poison Armor", "Iron Body", "Thorn Body", "Riot Shield", "Alien Armor",  -- Armaduras
+    "Wood", "Scrap", "Cultist Gem", "Forest Gem", "Mossy Coin", "Flower", "Bolt", "Sheet Metal", "UFO Junk", "UFO Component", "Broken Fan", "Old Radio", "Broken Microwave", "Tyre", "Metal Chair", "Old Car Engine", "Washing Machine", "Cultist Experiment", "Cultist Prototype", "UFO Scrap", "Bunny Foot", "Wolf Pelt", "Alpha Wolf Pelt", "Bear Pelt", "Arctic Fox Pelt", "Polar Bear Pelt", "Mammoth Tusk",  -- Materiais
+    "Old Flashlight", "Strong Flashlight", "Bandage", "Medkit", "Frog Boots",  -- Utilidades / heal / jump
+}
+
+local mobEsp = {"Wolf", "Alpha Wolf", "Bear", "Alpha Bear", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Elite Alien", "Arctic Fox", "Polar Bear", "Mammoth", "Green Frog", "Blue Frog", "Frog King"}
+
+local dme, die
+local dmes, dies
+
+dme = Tab:AddDropdown("", {
+   Title = "Select Item Esp",
+   Description = "",
+   Values = itensEsp,
+   Multi = true,
+   Default = {},
+   Callback = function(v)
+		dmes = {}
+		table.insert(dmes, v)
+})
+
+dme = Tab:AddDropdown("", {
+   Title = "Select Mob Esp",
+   Description = "",
+   Values = mobEsp,
+   Multi = true,
+   Default = {},
+   Callback = function(v)
+		dies = {}
+		table.insert(dies, v)
+})
+
+_G.Esptoggle = false
+local besp 
+besp = EspTab:AddToggle("",{
+	Title = "Enable esp on selected Mobs/Items",
+	Default = false,
+	Callback = function(v)
+		_G.Esptoggle = v
+	end
+})
+
+task.spawn(function()
+		while _G.Esptoggle do
+			task.wait(0.1)
+			for _, i in ipairs(dmes) do
+				ESP("Item", i, true)
+			end
+			for _, i in ipairs(dies) do
+				ESP("Mob", i, true)
+			end
+		end
+	end)
+
+EspTab:AddButton({
+	Title = "Remove ESPs",
+	Callback = function()
+		table.clear(dies)
+		table.clear(dmes)
+		dme:SetValues(dmes)
+		die:SetValues(dies)
+		besp:SetValue(false)
+		RemoveAllESP()
+	end
+})
+		
+					
