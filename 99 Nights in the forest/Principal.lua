@@ -118,3 +118,5 @@ task.spawn(function()
         if drag then drag.Enabled = true end
     end
 end)
+
+--[[============================ SCRIPT ============================]]--
