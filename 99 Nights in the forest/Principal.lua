@@ -492,6 +492,7 @@ task.spawn(function()
             if _G.SuperJumpToggle then
                 humanoid.UseJumpPower = true
                 humanoid.JumpPower = _G.SuperJumpValue
+				else humanoid.JumpPower = 50
             end
         end
     end
