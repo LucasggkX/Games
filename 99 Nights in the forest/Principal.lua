@@ -191,7 +191,7 @@ end)
 
 Combat:AddToggle("", {
 Title = "Kill Aura (OP)",
-Description = "Ataca automaticamente qualquer NPC\nPara usar: Esteja com alguma arma corpo a corpo na sua mão\nEle ataca o NPC mais próximo",
+Description = "Automatically attacks any NPC\nTo use: Hold a melee weapon in your hand\nIt attacks the nearest NPC",
 Default = false,
 Callback = function(value)
 local Players = game:GetService("Players")
@@ -281,13 +281,13 @@ end
 })
 
 local txt = {}
-for _, i in ipairs(armasValidas) do
-    table.insert(txt, i)
+for arma, _ in pairs(armasValidas) do
+    table.insert(txt, arma)
 end
 
 local ft = table.concat(txt, "\n")
 
 Combat:AddParagraph({
-    Title = "Armas Válidas para Kill Aura",
+    Title = "Valid Weapons for Kill Aura",
     Content = ft
 })
