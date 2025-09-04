@@ -514,146 +514,181 @@ end)
 
 
 
-local Camera = workspace.CurrentCamera
-
-local function ESP(tipo, nome, ativar)
-    local workspacePath
-    if tipo == "Mob" then
-        workspacePath = workspace:FindFirstChild("Characters")
-    elseif tipo == "Item" then
-        workspacePath = workspace:FindFirstChild("Items")
-    else
-        return
-    end
-    if not workspacePath then return end
-
-    for _, obj in pairs(workspacePath:GetChildren()) do
-        if obj.Name == nome then
-            local espBox = obj:FindFirstChild("ESP_Box")
-            local espLabel = obj:FindFirstChild("ESP_Label")
-
-            if ativar then
-                if not espBox then
-                    local box = Instance.new("BoxHandleAdornment")
-                    box.Name = "ESP_Box"
-                    box.Adornee = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart") or obj
-                    box.AlwaysOnTop = true
-                    box.ZIndex = 10
-                    box.Size = box.Adornee.Size
-                    box.Color3 = tipo == "Mob" and Color3.fromRGB(255,0,0) or Color3.fromRGB(0,255,0)
-                    box.Transparency = 0.5
-                    box.Parent = obj
-                end
-
-                if not espLabel then
-                    local billboard = Instance.new("BillboardGui")
-                    billboard.Name = "ESP_Label"
-                    billboard.Adornee = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart") or obj
-                    billboard.Size = UDim2.new(0, 200, 0, 50)
-                    billboard.StudsOffset = Vector3.new(0, 2, 0)
-                    billboard.AlwaysOnTop = true
-
-                    local text = Instance.new("TextLabel")
-                    text.Size = UDim2.new(1, 0, 1, 0)
-                    text.BackgroundTransparency = 1
-                    text.Text = obj.Name
-                    text.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    text.TextStrokeTransparency = 0
-                    text.TextScaled = false
-                    text.Font = Enum.Font.GothamBold
-                    text.TextSize = 14
-                    text.Parent = billboard
-
-                    billboard.Parent = obj
-
-                    task.spawn(function()
-                        while text.Parent and obj.Parent do
-                            local distance = (Camera.CFrame.Position - obj.Position).Magnitude
-                            local scale = math.clamp(30 / distance, 0.5, 1.5)
-                            text.TextSize = 14 * scale
-                            task.wait(0.05)
-                        end
-                    end)
-                end
-            else
-                if espBox then espBox:Destroy() end
-                if espLabel then espLabel:Destroy() end
-            end
-        end
-    end
-end
-
-local function RemoveAllESP()
-    for _, pathName in ipairs({"Characters","Items"}) do
-        local workspacePath = workspace:FindFirstChild(pathName)
-        if workspacePath then
-            for _, obj in ipairs(workspacePath:GetChildren()) do
-                local espBox = obj:FindFirstChild("ESP_Box")
-                local espLabel = obj:FindFirstChild("ESP_Label")
-                if espBox then espBox:Destroy() end
-                if espLabel then espLabel:Destroy() end
-            end
-        end
-    end
-end
-
 local itensEsp = {"Log","Chair","Biofuel","Coal","Fuel Canister","Oil Barrel","Cultist Corpse","Crossbow Cultist Corpse","Juggernaut Cultist Corpse","Alien Corpse","Elite Alien Corpse","Wolf Corpse","Alpha Wolf Corpse","Bear Corpse"}
 local mobEsp = {"Wolf","Alpha Wolf","Bear","Alpha Bear","Cultist","Crossbow Cultist","Juggernaut Cultist","Alien","Elite Alien","Arctic Fox","Polar Bear","Mammoth","Green Frog","Blue Frog","Frog King"}
 
-local selectedItems = {}
-local selectedMobs = {}
+function Aesp(nome, tipo)
+	local container
+	if tipo == "item" then
+		container = workspace:WaitForChild("Items")
+	elseif tipo == "mob" then
+		container = workspace.Characters
+	else
+		return
+	end
 
-local itemDropdown = EspTab:AddDropdown("", {
-    Title = "Select Item Esp",
-    Description = "",
-    Values = itensEsp,
-    Multi = true,
-    Default = {},
-    Callback = function(v)
-        selectedItems = v
-    end
+	for _, obj in ipairs(container:GetChildren()) do
+		if obj.Name == nome then
+			local parte = nil
+			if obj:IsA("BasePart") then
+				parte = obj
+			elseif obj:IsA("Model") then
+				parte = obj:FindFirstChildWhichIsA("BasePart")
+			end
+
+			if parte then
+				if parte:FindFirstChild("ESPTexto") then
+					continue
+				end
+
+				local esp = Instance.new("BillboardGui")
+				esp.Name = "ESPTexto"
+				esp.Adornee = parte
+				esp.Size = UDim2.new(0, 100, 0, 20)
+				esp.StudsOffset = Vector3.new(0, 2, 0)
+				esp.AlwaysOnTop = true
+
+				local texto = Instance.new("TextLabel", esp)
+				texto.Size = UDim2.new(1, 0, 1, 0)
+				texto.BackgroundTransparency = 1
+				texto.Text = obj.Name
+				texto.TextColor3 = Color3.fromRGB(255, 255, 0)
+				texto.TextStrokeTransparency = 0.2
+				texto.TextScaled = true
+				texto.Font = Enum.Font.SourceSansBold
+
+				esp.Parent = parte
+			end
+		end
+	end
+end
+
+function Desp(nome, tipo)
+	local container
+	if tipo == "item" then
+		container = workspace:WaitForChild("Items")
+	elseif tipo == "mob" then
+		container = workspace.Characters
+	else
+		return
+	end
+
+	for _, obj in ipairs(container:GetChildren()) do
+		if obj.Name == nome then
+			local parte = nil
+			if obj:IsA("BasePart") then
+				parte = obj
+			elseif obj:IsA("Model") then
+				parte = obj:FindFirstChildWhichIsA("BasePart")
+			end
+
+			if parte then
+				for _, gui in ipairs(parte:GetChildren()) do
+					if gui:IsA("BillboardGui") and gui.Name == "ESPTexto" then
+						gui:Destroy()
+					end
+				end
+			end
+		end
+	end
+end
+
+local vde = {}
+local vdm = {}
+
+local espdownItems = EspTab:AddDropdown("a", {
+   Title = "Select Itens to ESP",
+   Description = "",
+   Values = itensEsp,
+   Multi = true,
+   Default = {},
 })
 
-local mobDropdown = EspTab:AddDropdown("", {
-    Title = "Select Mob Esp",
-    Description = "",
-    Values = mobEsp,
-    Multi = true,
-    Default = {},
-    Callback = function(v)
-        selectedMobs = v
-    end
+espdownItems:OnChanged(function(val)
+	table.clear(vde)
+	for i, state in next, val do
+		if state then
+			vde[#vde + 1] = i
+		end
+	end
+end)
+
+local espdownMobs = EspTab:AddDropdown("b", {
+   Title = "Select Mobs to ESP",
+   Description = "",
+   Values = mobEsp,
+   Multi = true,
+   Default = {},
 })
 
-_G.Esptoggle = false
-local espToggle = EspTab:AddToggle("", {
-    Title = "Enable esp on selected Mobs/Items",
-    Default = false,
-    Callback = function(v)
-        _G.Esptoggle = v
-    end
-})
-
-task.spawn(function()
-    while true do
-        task.wait(0.1)
-        if _G.Esptoggle then
-            for _, itemName in ipairs(selectedItems) do
-                ESP("Item", itemName, true)
-            end
-            for _, mobName in ipairs(selectedMobs) do
-                ESP("Mob", mobName, true)
-            end
-        end
-    end
+espdownMobs:OnChanged(function(val)
+	table.clear(vdm)
+	for i, state in next, val do
+		if state then
+			vdm[#vdm + 1] = i
+		end
+	end
 end)
 
 EspTab:AddButton({
-    Title = "Remove ESPs",
-    Callback = function()
-        RemoveAllESP()
-        selectedItems = {}
-        selectedMobs = {}
-        espToggle:SetValue(false)
+	Title = "Adicionar esp",
+	Description = "Adiciona os itens e mobs selecionados em esp",
+	Callback = function()
+		for _, i in vde do
+			Aesp(i, "item")
+		end
+		for _, m in vdm do
+			Aesp(m, "mob")
+		end
+	end
+})
+
+
+_G.aae = false
+EspTab:AddToggle("", {
+    Title = "Auto add esp", 
+    Description = "Adiciona ESP automaticamente aos itens e mobs spawnados",
+    Default = false,
+    Callback = function(a)
+        _G.aae = a
+        if a then
+            task.spawn(function()
+                while _G.aae do
+                    local itens = workspace:WaitForChild("Items")
+                    local mobs = workspace:WaitForChild("Characters")
+
+                    for _, obj in ipairs(itens:GetChildren()) do
+                        if table.find(vde, obj.Name) then
+                            Aesp(obj.Name, "item")
+                        end
+                    end
+
+                    for _, mob in ipairs(mobs:GetChildren()) do
+                        if table.find(vdm, mob.Name) then
+                            Aesp(mob.Name, "mob")
+                        end
+                    end
+
+                    task.wait(1)
+                end
+            end)
+        end
     end
+})
+
+espTab:AddButton({
+	Title = "Remover esp",
+	Description = "Remove todos esp dos itens e mobs",
+	Callback = function()
+		for _, i in vde do
+			Desp(i, "item")
+		end
+		for _, m in vdm do
+			Desp(m, "mob")
+		end
+		table.clear(vde)
+		table.clear(vdm)
+		espdownItems:SetValue(vde)
+		espdownMobs:SetValue(vdm)
+	end
 })
