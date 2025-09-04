@@ -362,6 +362,12 @@ TPsTab:AddToggle("", {
     end
 })
 
+TPsTab:AddButton({
+	Title = "Teleports to the campfire",
+	Callback = function()
+	    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 8, 0)
+	end
+})
 
 
 function wiki(nome)
