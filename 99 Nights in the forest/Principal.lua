@@ -121,15 +121,20 @@ end)
 
 --[[ ================= SCRIPT ================= ]]--
 
-local armasValidas = {    
-	["Old Axe"] = true,    
-	["Good Axe"] = true,    
-	["Strong Axe"] = true,    
-	["Spear"] = true,    
-	["Katana"] = true,    
-	["Morningstar"] = true,
-	["Laser Sword"] = true
-}    
+local armasValidas = {
+    ["Old Axe"] = true,
+    ["Good Axe"] = true,
+    ["Ice Axe"] = true,
+    ["Admin Axe"] = true,
+    ["Strong Axe"] = true,
+    ["Spear"] = true,
+    ["Morningstar"] = true,
+    ["Katana"] = true,
+    ["Laser Sword"] = true,
+    ["Ice Sword"] = true,
+    ["Trident"] = true,
+    ["Poison Spear"] = true
+}
 
 _G.WalkSpeedToggle = false
 _G.WalkSpeed = 50
