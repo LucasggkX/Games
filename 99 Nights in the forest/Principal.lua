@@ -128,7 +128,7 @@ _G.nwsp = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
 
 local input
-Input = Tab:AddInput("Input", {
+Input = PlayerTab:AddInput("Input", {
     Title = "Set WalkSpeed",
     Description = "",
     Default = "",
