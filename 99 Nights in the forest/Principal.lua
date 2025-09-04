@@ -140,7 +140,7 @@ local armasValidas = {
 local itensEsp = {"A"}
 
 
-local mobEsp = {"A"}
+local mobEsp = {"Bunny", "Wolf", "Alpha Wolf", "Bear", "Polar Bear", "Arctic Fox", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Alien Elite", "Mammoth"}
 
 
 _G.WalkSpeedToggle = false
