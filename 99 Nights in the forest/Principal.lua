@@ -690,3 +690,107 @@ EspTab:AddButton({
 		espdownMobs:SetValue(vdm)
 	end
 })
+
+
+
+
+
+
+
+
+
+
+
+function blm(nome, caminho, pos, extra)
+	local p = game.Players.LocalPlayer
+	if not pos then return end
+
+	local x, y, z = string.match(pos, "([^,]+),%s*([^,]+),%s*([^,]+)")
+	local destino = Vector3.new(tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0)
+
+	for _, item in ipairs(workspace.Items:GetChildren()) do
+		if item.Name == nome then
+			local partes = string.split(caminho, ".")
+			local obj = item
+			for _, parte in ipairs(partes) do
+				obj = obj:FindFirstChild(parte)
+				if not obj then break end
+			end
+			if obj and obj:IsA("BasePart") then
+				if (obj.Position - destino).Magnitude > (extra or 30) then
+					obj.CFrame = CFrame.new(destino)
+				end
+			end
+		end
+	end
+end
+
+function bl(nome, caminho)
+	local p = game.Players.LocalPlayer
+	local hrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+	if not hrp then return end
+
+	for _, item in ipairs(workspace.Items:GetChildren()) do
+		if item.Name == nome then
+			local partes = string.split(caminho, ".")
+			local obj = item
+			for _, parte in ipairs(partes) do
+				obj = obj:FindFirstChild(parte)
+				if not obj then break end
+			end
+			if obj and obj:IsA("BasePart") then
+				obj.CFrame = hrp.CFrame + Vector3.new(math.random(-5,5), 0, math.random(-5,5))
+			end
+		end
+	end
+end
+
+function BringMeat()
+	bl("Cooked Steak", "Main")
+	bl("Cooked Morsel", "Meat")
+end
+
+function blmMeat()
+	blm("Steak", "Main", "-0, 6.5, 0", 0)
+	blm("Morsel", "Meat", "-0, 6.5, 0", 0)
+	task.wait(0.1)
+	blm("Morsel", "Meat", "-0, 6.35, 0", 0)
+end
+
+survival:AddSection("Auto Cook meat")
+
+local acm
+local aguardando = false
+
+acm = survival:AddButton({
+    Title = "Cook Meat",
+    Description = "After clicking, it cooks the meat and after 5 seconds teleports them to you",
+    Callback = function()
+        if aguardando then return end
+        aguardando = true
+
+        blmMeat()
+
+        local ini = os.time() + 5
+
+        task.spawn(function()
+            while os.time() < ini do
+                local t = ini - os.time()
+                acm:SetDesc("Wait: " .. t .. " seconds to use again")
+                task.wait(0.1)
+            end
+
+            acm:SetDesc("After clicking, it cooks the meat and after 5 seconds teleports them to you")
+            aguardando = false
+        end)
+
+        task.delay(5, function()
+            BringMeat()
+        end)
+    end
+})
+
+survival:AddParagraph({
+	Title = "How to use?",
+	Content = "The first time it will bug\nHow to fix it?\nWhen you click the button for the first time\ngo to the campfire and click on one of the meats\nAfter that they will drop and cook\nFrom this moment on it will no longer bug\nIf it happens again just repeat this process."
+})
