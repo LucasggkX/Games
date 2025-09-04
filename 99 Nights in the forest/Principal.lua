@@ -641,24 +641,10 @@ espdownMobs:OnChanged(function(val)
 	end
 end)
 
-EspTab:AddButton({
-	Title = "Add esp",
-	Description = "Adds the selected items and mobs in esp",
-	Callback = function()
-		for _, i in vde do
-			Aesp(i, "item")
-		end
-		for _, m in vdm do
-			Aesp(m, "mob")
-		end
-	end
-})
-
-
 _G.aae = false
 EspTab:AddToggle("", {
-    Title = "Auto add esp", 
-    Description = "Automatically adds ESP to spawned items and mobs",
+    Title = "Enable esp", 
+    Description = "Automatically adds esp to selected items and mobs",
     Default = false,
     Callback = function(a)
         _G.aae = a
