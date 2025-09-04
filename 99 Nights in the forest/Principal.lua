@@ -121,3 +121,53 @@ end)
 
 --[[ ============================ SCRIPT ============================ ]]--
 
+_G.WalkSpeedToggle = false
+_G.WalkSpeed = 50
+_G.nwsp = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
+
+local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
+
+local input
+Input = Tab:AddInput("Input", {
+    Title = "Set WalkSpeed",
+    Description = "",
+    Default = "",
+    Placeholder = "Set WalkSpeed 30~150",
+    Numeric = true,
+    Finished = false, 
+    Callback = function(Value)
+		if Value > 150 then
+			input:SetValue(150)
+            _G.WalkSpeed = 150
+		  elseif Value < 30 then
+			input:SetValue(30)
+            _G.WalkSpeed = 30
+		  else
+			_G.WalkSpeed = Value
+		end
+    end
+})
+
+PlayerTab:AddToggle("",{
+		Title = "Activate WalkSpeed",
+		Description = "activate WalkSpeed",
+		Default = _G.WalkSpeedToggle
+		Callback = function(v)
+			_G.WalkSpeedToggle = v
+			if v then
+				task.spawn(function()
+					while _G.WalkSpeedToggle do
+						task.wait(0.025)
+						game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
+					end
+				end)
+			else
+				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.nwsp
+			end
+		end
+	})
+
+						
+
+			
+			
