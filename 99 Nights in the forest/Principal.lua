@@ -146,7 +146,7 @@ _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
 
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
-local survival = Window:AddTab({ Title = "Survival", Icon = "book-heart" })
+local survival = Window:AddTab({ Title = "Survival", Icon = "heart" })
 local TPsTab = Window:AddTab({Title = "TPs", Icon = "map"})
 local Combat = Window:AddTab({ Title = "Combat", Icon = "swords" })
 
