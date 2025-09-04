@@ -22,7 +22,7 @@ local gameTitle = game:GetService("MarketplaceService"):GetProductInfo(game.Plac
 
 local Window = Fluent:CreateWindow({
     Title = gameTitle .. " |",
-    SubTitle = "Made by Lucas",
+    SubTitle = "Made by Lucas | in development",
     TabWidth = 180,
     Size = UDim2.fromOffset(600, 350),
     Acrylic = false,
@@ -143,6 +143,7 @@ _G.killaura = nil
 _G.TPSActive = false
 
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
+local survival = Window:AddTab({ Title = "Survival", Icon = "" })
 local TPsTab = Window:AddTab({Title = "TPs", Icon = "map"})
 local Combat = Window:AddTab({ Title = "Combat", Icon = "" })
 
@@ -317,6 +318,132 @@ TPsTab:AddToggle("", {
                                 player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 8, 0)
                             end
                         end
+                    end
+                end
+            end)
+        end
+    end
+})
+
+
+
+function wiki(nome)
+    local c = 0
+    for _, i in ipairs(workspace.Items:GetChildren()) do
+        if i.Name == nome then
+            c = c + 1
+        end
+    end
+    return c
+end
+
+function ghn()
+    return math.floor(game:GetService("Players").LocalPlayer.PlayerGui.Interface.StatBars.HungerBar.Bar.Size.X.Scale * 100)
+end
+
+function feed(nome)
+    for _, item in ipairs(workspace.Items:GetChildren()) do
+        if item.Name == nome then
+            game:GetService("ReplicatedStorage").RemoteEvents.RequestConsumeItem:InvokeServer(item)
+            break
+        end
+    end
+end
+
+function notifeed(nome)
+    Fluent:Notify({
+        Title = "Auto feed pause",
+        Content = "Sem '" .. nome .. "' Spawnado para consumo, Selecione outra comida por enquanto..",
+        Duration = 3
+    })
+end
+
+local vf, ife, tfe
+local tf = false
+local alimentos = {
+    "Meat Sandwich?",
+    "Hearty Stew",
+    "Stew",
+    "Chili",
+    "Cake",
+    "Ribs",
+    "Steak",
+    "Morsel",
+    "Apple",
+    "Berry",
+    "Pumpkin",
+    "Corn",
+    "Carrot",
+    "Shark",
+    "Swordfish",
+    "Eel",
+    "Char",
+    "Jellyfish",
+    "Clownfish",
+    "Salmon",
+    "Mackerel"
+}
+local c = "Carrot"
+vf = 75
+
+survival:AddSection("Auto feed")
+survival:AddDropdown("", {
+    Title = "Escolha a comida",
+    Description = "Selecione o alimento para auto feed",
+    Values = alimentos,
+    Multi = false,
+    Default = c,
+    Callback = function(value)
+        c = value
+    end
+})
+
+task.spawn(function()
+    local a = survival:AddParagraph({ Title = "fome:", Content = ghn() })
+    local b = survival:AddParagraph({ Title = "Comida selecionada:", Content = c })
+    while true do
+        task.wait(0.2)
+        a:SetDesc(ghn() .. "%")
+        b:SetDesc(c)
+    end
+end)
+
+ife = survival:AddInput("", {
+    Title = "Feed %",
+    Description = "Quando fome atingir (X%) Comer",
+    Default = vf,
+    Placeholder = "",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        vf = tonumber(Value) or 75
+        if vf < 0 then
+            vf = 1
+            ife:SetValue(vf)
+        elseif vf > 100 then
+            vf = 100
+            ife:SetValue(vf)
+        end
+    end
+})
+
+tfe = survival:AddToggle("", {
+    Title = "Ativar auto feed",
+    Description = "Auto se explica",
+    Default = false,
+    Callback = function(v)
+        tf = v
+        if tf then
+            task.spawn(function()
+                while tf do
+                    task.wait(0.075)
+                    if wiki(c) == 0 then
+                        tfe:SetValue(false)
+                        notifeed(c)
+                        break
+                    end
+                    if ghn() <= vf then
+                        feed(c)
                     end
                 end
             end)
