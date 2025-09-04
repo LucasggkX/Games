@@ -609,25 +609,25 @@ local mobEsp = {"Wolf","Alpha Wolf","Bear","Alpha Bear","Cultist","Crossbow Cult
 local selectedItems = {}
 local selectedMobs = {}
 
-local itemDropdown = EspTab:AddDropdown("", {
+local itemDropdown = Tab:AddDropdown("", {
     Title = "Select Item Esp",
     Description = "",
     Values = itensEsp,
     Multi = true,
     Default = {},
-    Callback = function(v)
-        selectedItems = v
+    Callback = function(values)
+        selectedItems = values
     end
 })
 
-local mobDropdown = EspTab:AddDropdown("", {
+local mobDropdown = Tab:AddDropdown("", {
     Title = "Select Mob Esp",
     Description = "",
     Values = mobEsp,
     Multi = true,
     Default = {},
-    Callback = function(v)
-        selectedMobs = v
+    Callback = function(values)
+        selectedMobs = values
     end
 })
 
