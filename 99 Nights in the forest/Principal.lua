@@ -208,10 +208,10 @@ PlayerTab:AddToggle("", {
         _G.InfJumpToggle = v
     end
 })
-
-local superJumpInput = PlayerTab:AddInput("", {
+local superJumpInput
+superJumpInput = PlayerTab:AddInput("", {
     Title = "Super Jump Power",
-    Description = "Set your jump power (50~500)",
+    Description = "Set your jump power (50~170)",
     Default = _G.SuperJumpValue,
     Placeholder = "Enter jump power",
     Numeric = true,
@@ -219,8 +219,8 @@ local superJumpInput = PlayerTab:AddInput("", {
     Callback = function(Value)
         local num = tonumber(Value)
         if not num then return end
-        if num < 50 then num = 50 end
-        if num > 500 then num = 500 end
+        if num < 50 then num = 50 superJumpInput:SetValue(50) end
+        if num > 200 then num = 200 superJumpInput:SetValue(200) end
         _G.SuperJumpValue = num
     end
 })
