@@ -609,7 +609,7 @@ local mobEsp = {"Wolf","Alpha Wolf","Bear","Alpha Bear","Cultist","Crossbow Cult
 local selectedItems = {}
 local selectedMobs = {}
 
-local itemDropdown = Tab:AddDropdown("", {
+local itemDropdown = EspTab:AddDropdown("", {
     Title = "Select Item Esp",
     Description = "",
     Values = itensEsp,
@@ -620,7 +620,7 @@ local itemDropdown = Tab:AddDropdown("", {
     end
 })
 
-local mobDropdown = Tab:AddDropdown("", {
+local mobDropdown = EspTab:AddDropdown("", {
     Title = "Select Mob Esp",
     Description = "",
     Values = mobEsp,
