@@ -188,18 +188,6 @@ PlayerTab:AddToggle("",{
     end
 })
 
-task.spawn(function()
-    while true do
-        task.wait(0.025)
-        if _G.WalkSpeedToggle then
-            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-            if humanoid then
-                humanoid.WalkSpeed = _G.WalkSpeed
-            end
-        end
-    end
-end)
-
 PlayerTab:AddToggle("", {
     Title = "Infinite Jump",
     Description = "Toggle Infinite Jump On/Off",
@@ -487,3 +475,29 @@ tfe = survival:AddToggle("", {
         end
     end
 })
+
+
+task.spawn(function()
+    while true do
+        task.wait(0.025)
+        local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            if _G.WalkSpeedToggle then
+                humanoid.WalkSpeed = _G.WalkSpeed
+            end
+        end
+    end
+end)
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        if _G.InfJumpToggle then
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+        if _G.SuperJumpToggle then
+            humanoid.JumpPower = _G.SuperJumpValue
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end)
