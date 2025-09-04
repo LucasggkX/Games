@@ -514,8 +514,6 @@ end)
 
 
 
-local itensEsp = {"Log","Chair","Biofuel","Coal","Fuel Canister","Oil Barrel","Cultist Corpse","Crossbow Cultist Corpse","Juggernaut Cultist Corpse","Alien Corpse","Elite Alien Corpse","Wolf Corpse","Alpha Wolf Corpse","Bear Corpse"}
-local mobEsp = {"Wolf","Alpha Wolf","Bear","Alpha Bear","Cultist","Crossbow Cultist","Juggernaut Cultist","Alien","Elite Alien","Arctic Fox","Polar Bear","Mammoth","Green Frog","Blue Frog","Frog King"}
 
 function Aesp(nome, tipo)
 	local container
@@ -676,8 +674,8 @@ EspTab:AddToggle("", {
     end
 })
 
-espTab:AddButton({
-	Title = "Remove esp ",
+EspTab:AddButton({
+	Title = "Remove esp",
 	Description = "Removes all esp from items and mobs ",
 	Callback = function()
 		for _, i in vde do
