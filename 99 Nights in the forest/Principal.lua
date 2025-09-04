@@ -150,11 +150,13 @@ local survival = Window:AddTab({ Title = "Survival", Icon = "" })
 local TPsTab = Window:AddTab({Title = "TPs", Icon = "map"})
 local Combat = Window:AddTab({ Title = "Combat", Icon = "" })
 
+PlayerTab:AddSection("Speed settings")
+
 local input
 input = PlayerTab:AddInput("Input", {
     Title = "Set WalkSpeed",
     Description = "",
-    Default = "",
+    Default = 50,
     Placeholder = "Set WalkSpeed 30~150",
     Numeric = true,
     Finished = true, 
@@ -188,6 +190,8 @@ PlayerTab:AddToggle("",{
     end
 })
 
+PlayerTab:AddSection("Jump Settings")
+
 PlayerTab:AddToggle("", {
     Title = "Infinite Jump",
     Description = "Toggle Infinite Jump On/Off",
@@ -199,7 +203,7 @@ PlayerTab:AddToggle("", {
 local superJumpInput
 superJumpInput = PlayerTab:AddInput("", {
     Title = "Super Jump Power",
-    Description = "Set your jump power (50~170)",
+    Description = "Set your jump power (50~200)",
     Default = _G.SuperJumpValue,
     Placeholder = "Enter jump power",
     Numeric = true,
@@ -485,6 +489,10 @@ task.spawn(function()
             if _G.WalkSpeedToggle then
                 humanoid.WalkSpeed = _G.WalkSpeed
             end
+            if _G.SuperJumpToggle then
+                humanoid.UseJumpPower = true
+                humanoid.JumpPower = _G.SuperJumpValue
+            end
         end
     end
 end)
@@ -493,10 +501,6 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
     local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
     if humanoid then
         if _G.InfJumpToggle then
-            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-        end
-        if _G.SuperJumpToggle then
-            humanoid.JumpPower = _G.SuperJumpValue
             humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
         end
     end
