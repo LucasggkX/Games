@@ -145,10 +145,11 @@ _G.InfJumpToggle = false
 _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
 
-local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
-local survival = Window:AddTab({ Title = "Survival", Icon = "heart" })
-local TPsTab = Window:AddTab({Title = "TPs", Icon = "map"})
-local Combat = Window:AddTab({ Title = "Combat", Icon = "swords" })
+local PlayerTab =    Window:AddTab({Title = "Player",   Icon = "user"})
+local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
+local EspTab    =    Window:AddTab({Title = "Esp",      Icon = "binoculars"})
+local TPsTab    =    Window:AddTab({Title = "TPs",      Icon = "map"})
+local Combat    =    Window:AddTab({Title = "Combat",   Icon = "swords"})
 
 PlayerTab:AddSection("Speed settings")
 
@@ -507,3 +508,94 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
         end
     end
 end)
+
+
+
+
+
+
+local Camera = workspace.CurrentCamera
+local function ESP(tipo, nome, ativar)
+    local workspacePath
+    if tipo == "Mob" then
+        workspacePath = workspace:FindFirstChild("Characters")
+    elseif tipo == "Item" then
+        workspacePath = workspace:FindFirstChild("Items")
+    else
+        return
+    end
+
+    if not workspacePath then return end
+
+    for _, obj in pairs(workspacePath:GetChildren()) do
+        if obj.Name == nome then
+            local espBox = obj:FindFirstChild("ESP_Box")
+            local espLabel = obj:FindFirstChild("ESP_Label")
+
+            if ativar then
+                if not espBox then
+                    local box = Instance.new("BoxHandleAdornment")
+                    box.Name = "ESP_Box"
+                    box.Adornee = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart") or obj
+                    box.AlwaysOnTop = true
+                    box.ZIndex = 10
+                    box.Size = box.Adornee.Size
+                    box.Color3 = tipo == "Mob" and Color3.fromRGB(255,0,0) or Color3.fromRGB(0,255,0)
+                    box.Transparency = 0.5
+                    box.Parent = obj
+                end
+
+                if not espLabel then
+                    local billboard = Instance.new("BillboardGui")
+                    billboard.Name = "ESP_Label"
+                    billboard.Adornee = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart") or obj
+                    billboard.Size = UDim2.new(0, 200, 0, 50)
+                    billboard.StudsOffset = Vector3.new(0, 2, 0)
+                    billboard.AlwaysOnTop = true
+
+                    local text = Instance.new("TextLabel")
+                    text.Size = UDim2.new(1, 0, 1, 0)
+                    text.BackgroundTransparency = 1
+                    text.Text = obj.Name
+                    text.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    text.TextStrokeTransparency = 0
+                    text.TextScaled = false
+                    text.Font = Enum.Font.GothamBold
+                    text.TextSize = 14
+                    text.Parent = billboard
+
+                    billboard.Parent = obj
+
+                    task.spawn(function()
+                        while text.Parent do
+                            local distance = (Camera.CFrame.Position - obj.Position).Magnitude
+                            local scale = math.clamp(30 / distance, 0.5, 1.5)
+                            text.TextSize = 14 * scale
+                            task.wait(0.05)
+                        end
+                    end)
+                end
+            else
+                if espBox then espBox:Destroy() end
+                if espLabel then espLabel:Destroy() end
+            end
+        end
+    end
+end
+
+local function RemoveAllESP()
+    local paths = {"Characters", "Items"}
+
+    for _, pathName in pairs(paths) do
+        local workspacePath = workspace:FindFirstChild(pathName)
+        if workspacePath then
+            for _, obj in pairs(workspacePath:GetChildren()) do
+                local espBox = obj:FindFirstChild("ESP_Box")
+                local espLabel = obj:FindFirstChild("ESP_Label")
+                if espBox then espBox:Destroy() end
+                if espLabel then espLabel:Destroy() end
+            end
+        end
+    end
+end
+
