@@ -138,9 +138,12 @@ local armasValidas = {
 
 _G.WalkSpeedToggle = false
 _G.WalkSpeed = 50
-_G.nwsp = game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed
+_G.nwsp = 20
 _G.killaura = nil
 _G.TPSActive = false
+_G.InfJumpToggle = false
+_G.SuperJumpToggle = false
+_G.SuperJumpValue = 100
 
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
 local survival = Window:AddTab({ Title = "Survival", Icon = "" })
@@ -196,6 +199,40 @@ task.spawn(function()
         end
     end
 end)
+
+PlayerTab:AddToggle("", {
+    Title = "Infinite Jump",
+    Description = "Toggle Infinite Jump On/Off",
+    Default = _G.InfJumpToggle,
+    Callback = function(v)
+        _G.InfJumpToggle = v
+    end
+})
+
+local superJumpInput = PlayerTab:AddInput("", {
+    Title = "Super Jump Power",
+    Description = "Set your jump power (50~500)",
+    Default = _G.SuperJumpValue,
+    Placeholder = "Enter jump power",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        local num = tonumber(Value)
+        if not num then return end
+        if num < 50 then num = 50 end
+        if num > 500 then num = 500 end
+        _G.SuperJumpValue = num
+    end
+})
+
+PlayerTab:AddToggle("", {
+    Title = "Activate Super Jump",
+    Description = "Toggle Super Jump On/Off",
+    Default = _G.SuperJumpToggle,
+    Callback = function(v)
+        _G.SuperJumpToggle = v
+    end
+})
 
 Combat:AddToggle("", {
 Title = "Kill Aura (OP)",
