@@ -135,8 +135,10 @@ _G.WalkSpeedToggle = false
 _G.WalkSpeed = 50
 _G.nwsp = game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed
 _G.killaura = nil
+_G.TPSActive = false
 
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
+local TPsTab = Window:AddTab({Title = "TPs", Icon = "map"})
 local Combat = Window:AddTab({ Title = "Combat", Icon = "" })
 
 local input
@@ -290,4 +292,29 @@ local ft = table.concat(txt, "\n")
 Combat:AddParagraph({
     Title = "Valid Weapons for Kill Aura",
     Content = ft
+})
+
+TPsTab:AddToggle("", {
+    Title = "Teleport to Campfire at Night",
+    Description = "Teleports automatically when the timer reaches 0:00",
+    Default = _G.TPSActive,
+    Callback = function(v)
+        _G.TPSActive = v
+        if v then
+            task.spawn(function()
+                while _G.TPSActive do
+                    task.wait(0.25)
+                    local player = game:GetService("Players").LocalPlayer
+                    local gui = player.PlayerGui:FindFirstChild("Interface")
+                    if gui and gui:FindFirstChild("TopRight") and gui.TopRight:FindFirstChild("Frame") and gui.TopRight.Frame:FindFirstChild("SunDial") and gui.TopRight.Frame.SunDial:FindFirstChild("RealTimer") then
+                        if gui.TopRight.Frame.SunDial.RealTimer.Text == "0:00" then
+                            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                                player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 8, 0)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
 })
