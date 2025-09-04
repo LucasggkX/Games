@@ -148,7 +148,7 @@ _G.SuperJumpValue = 100
 local PlayerTab = Window:AddTab({Title = "Player", Icon = "user"})
 local survival = Window:AddTab({ Title = "Survival", Icon = "" })
 local TPsTab = Window:AddTab({Title = "TPs", Icon = "map"})
-local Combat = Window:AddTab({ Title = "Combat", Icon = "" })
+local Combat = Window:AddTab({ Title = "Combat", Icon = "swords" })
 
 PlayerTab:AddSection("Speed settings")
 
@@ -492,7 +492,8 @@ task.spawn(function()
             if _G.SuperJumpToggle then
                 humanoid.UseJumpPower = true
                 humanoid.JumpPower = _G.SuperJumpValue
-				else humanoid.JumpPower = 50
+			else 
+				humanoid.JumpPower = 50
             end
         end
     end
