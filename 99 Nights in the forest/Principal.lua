@@ -18,8 +18,10 @@ game:GetService("StarterGui"):SetCore("SendNotification", {Title="script loaded.
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
+local gameTitle = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+
 local Window = Fluent:CreateWindow({
-    Title = "99 Nights In The Forest |",
+    Title = gameTitle .. " |",
     SubTitle = "Made by Lucas",
     TabWidth = 180,
     Size = UDim2.fromOffset(600, 350),
