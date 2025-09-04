@@ -407,6 +407,8 @@ local alimentos = {
     "Meat Sandwich?",
     "Hearty Stew",
     "Stew",
+	"Cooked Morsel",
+	"Cooked Steak",
     "Chili",
     "Cake",
     "Ribs",
