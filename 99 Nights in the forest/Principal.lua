@@ -151,7 +151,7 @@ Input = PlayerTab:AddInput("Input", {
 PlayerTab:AddToggle("",{
 		Title = "Activate WalkSpeed",
 		Description = "activate WalkSpeed",
-		Default = _G.WalkSpeedToggle
+		Default = _G.WalkSpeedToggle,
 		Callback = function(v)
 			_G.WalkSpeedToggle = v
 			if v then
@@ -166,8 +166,3 @@ PlayerTab:AddToggle("",{
 			end
 		end
 	})
-
-						
-
-			
-			
