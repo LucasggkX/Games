@@ -149,6 +149,8 @@ _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
 _G.aae = false
 _G.EspPlayer = false
+_G.FarmActiveSmall = false
+_G.FarmActiveBig = false
 
 local PlayerTab =    Window:AddTab({Title = "Player",   Icon = "user"})
 local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
@@ -756,9 +758,6 @@ local AxeValidos = {
     ["Chainsaw"] = true
 }
 
-_G.FarmActiveSmall = false
-_G.FarmActiveBig = false
-
 Farm:AddSection("Auto Farm Small Tree")
 
 Farm:AddToggle("", {
@@ -1046,6 +1045,8 @@ EspTab:AddToggle("", {
     end
 })
 
+TPsTab:AddSection("Players Teleport")
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -1063,7 +1064,7 @@ local Dropdown = TPsTab:AddDropdown("Dropdown", {
 })
 
 task.spawn(function()
-    while task.wait(0.1) do
+    while task.wait(0.5) do
         local names = {}
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer then
