@@ -379,9 +379,26 @@ TPsTab:AddButton({
 	Title = "Teleport to anvil",
 	Description = "You must have unlocked the area and spawned the structure.",
 	Callback = function()
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Map.Landmarks.ToolWorkshop.Functional.Podium:GetChildren()[3].CFrame + Vector3.new(0,30,0)
+		local podiums = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Landmarks") and workspace.Map.Landmarks:FindFirstChild("ToolWorkshop") and workspace.Map.Landmarks.ToolWorkshop:FindFirstChild("Functional") and workspace.Map.Landmarks.ToolWorkshop.Functional:FindFirstChild("Podium")
+		if podiums and #podiums:GetChildren() >= 3 then
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = podiums:GetChildren()[3].CFrame + Vector3.new(0,30,0)
+		end
 	end
 })
+
+TPsTab:AddButton({
+	Title = "Teleport to diamond castle",
+	Description = "You must have unlocked the area and spawned the structure.",
+	Callback = function()
+		local exterior = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Landmarks") and workspace.Map.Landmarks:FindFirstChild("Stronghold") and workspace.Map.Landmarks.Stronghold:FindFirstChild("Building") and workspace.Map.Landmarks.Stronghold.Building:FindFirstChild("Exterior")
+		if exterior and #exterior:GetChildren() >= 12 then
+			local model = exterior:GetChildren()[12]:FindFirstChild("Model")
+			if model and #model:GetChildren() >= 5 then
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = model:GetChildren()[5].CFrame + Vector3.new(0,15,0)
+			end
+		end
+	end
+})	
 
 function wiki(nome)
     local c = 0
