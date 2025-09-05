@@ -163,6 +163,7 @@ local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
 local EspTab    =    Window:AddTab({Title = "Esp",      Icon = "crosshair"})
 local TPsTab    =    Window:AddTab({Title = "TPs",      Icon = "map"})
 local Combat    =    Window:AddTab({Title = "Combat",   Icon = "swords"})
+local Farm      =    Window:AddTab({Title = "Farm",     Icon = "farm"})
 
 PlayerTab:AddSection("Speed settings")
 
@@ -752,4 +753,117 @@ acm = survival:AddButton({
 survival:AddParagraph({
 	Title = "How to use?",
 	Content = "The first time it will bug\nHow to fix it?\nWhen you click the button for the first time\ngo to the campfire and click on one of the meats\nAfter that they will drop and cook\nFrom this moment on it will no longer bug\nIf it happens again just repeat this process."
+})
+
+local AxeValidos = {
+    ["Old Axe"] = true,
+    ["Good Axe"] = true,
+    ["Ice Axe"] = true,
+    ["Admin Axe"] = true,
+    ["Strong Axe"] = true
+}
+
+_G.FarmActive = false
+
+Farm:AddToggle("", {
+    Title = "Auto Farm Small Trees",
+    Default = false,
+    Callback = function(value)
+        _G.FarmActive = value
+
+        if value then
+            local Players = game:GetService("Players")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local LocalPlayer = Players.LocalPlayer
+
+            local function gerarID()
+                return "2_" .. LocalPlayer.UserId
+            end
+
+            local function getArmaValida()
+                local inv = LocalPlayer:FindFirstChild("Inventory")
+                local char = workspace:FindFirstChild(LocalPlayer.Name)
+                local equipado = char and char:GetAttribute("Equipped")
+                if not equipado or not AxeValidos[equipado] then return nil end
+                if inv then
+                    local arma = inv:FindFirstChild(equipado)
+                    if arma then
+                        return arma
+                    end
+                end
+                return nil
+            end
+
+            local function getSmallTreesMaisProximas(limite)
+                local map = workspace:FindFirstChild("Map")
+                if not map then return {} end
+
+                local foliage = map:FindFirstChild("Foliage")
+                local landmarks = map:FindFirstChild("Landmarks")
+                local char = workspace:FindFirstChild(LocalPlayer.Name)
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if not hrp then return {} end
+
+                local trees = {}
+
+                local function coletarArvores(pasta)
+                    if not pasta then return end
+                    for _, arvore in pairs(pasta:GetChildren()) do
+                        if arvore.Name == "Small Tree" then
+                            local part = arvore:FindFirstChild("Part")
+                            if part and part.Position then
+                                local dist = (hrp.Position - part.Position).Magnitude
+                                table.insert(trees, {arvore = arvore, dist = dist})
+                            end
+                        end
+                    end
+                end
+
+                coletarArvores(foliage)
+                coletarArvores(landmarks)
+
+                table.sort(trees, function(a, b)
+                    return (a.dist or math.huge) < (b.dist or math.huge)
+                end)
+
+                local resultado = {}
+                for i = 1, math.min(limite, #trees) do
+                    table.insert(resultado, trees[i].arvore)
+                end
+
+                return resultado
+            end
+
+            local function atacarSmallTrees()
+                local trees = getSmallTreesMaisProximas(10)
+                if #trees == 0 then return end
+
+                local arma = getArmaValida()
+                if not arma then return end
+
+                local evento = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject")
+
+                for _, tree in pairs(trees) do
+                    local part = tree:FindFirstChild("Part")
+                    if part then
+                        task.spawn(function()
+                            local args = {tree, arma, gerarID(), part.CFrame}
+                            pcall(function()
+                                evento:InvokeServer(unpack(args))
+                            end)
+                        end)
+                    end
+                end
+            end
+
+            task.spawn(function()
+                while _G.FarmActive do
+                    task.wait(0.1)
+                    if LocalPlayer and LocalPlayer.Parent then
+                        atacarSmallTrees()
+                    end
+                end
+            end)
+        end
+    end
 })
