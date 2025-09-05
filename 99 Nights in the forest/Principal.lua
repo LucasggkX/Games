@@ -136,6 +136,13 @@ local armasValidas = {
     ["Poison Spear"] = true
 }
 
+local AxeValidos = {
+    "Old Axe",
+    "Good Axe",
+    "Ice Axe",
+    "Admin Axe",
+    "Strong Axe"
+}
 
 local itensEsp = {
     "Log", "Chair", "Biofuel", "Coal", "Fuel Canister", "Oil Barrel",
@@ -157,6 +164,8 @@ _G.TPSActive = false
 _G.InfJumpToggle = false
 _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
+_G.FarmActiveSmall = false
+_G.FarmActiveBig = false
 
 local PlayerTab =    Window:AddTab({Title = "Player",   Icon = "user"})
 local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
@@ -755,16 +764,7 @@ survival:AddParagraph({
 	Content = "The first time it will bug\nHow to fix it?\nWhen you click the button for the first time\ngo to the campfire and click on one of the meats\nAfter that they will drop and cook\nFrom this moment on it will no longer bug\nIf it happens again just repeat this process."
 })
 
-local AxeValidos = {
-    "Old Axe",
-    "Good Axe",
-    "Ice Axe",
-    "Admin Axe",
-    "Strong Axe"
-}
-
-_G.FarmActiveSmall = false
-_G.FarmActiveBig = false
+Farm:AddSection("Auto Farm Small Tree")
 
 Farm:AddToggle("", {
     Title = "Auto Farm Small Trees",
@@ -873,6 +873,8 @@ Farm:AddParagraph({
     Title = "Allowed Axes",
     Content = "Small Trees can be farmed with: " .. contentSmall .. "."
 })
+
+Farm:AddSection("Auto Farm Big Tree")
 
 Farm:AddToggle("", {
     Title = "Auto Farm TreeBig",
