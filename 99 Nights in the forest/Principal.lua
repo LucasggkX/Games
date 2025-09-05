@@ -870,7 +870,7 @@ Farm:AddSection("Auto Farm Big Tree")
 
 Farm:AddToggle("", {
     Title = "Auto Farm TreeBig",
-    Description = "Farm all TreeBig in Foliage using Admin Axe or Strong Axe only.",
+    Description = "Farm all TreeBig in Foliage using Admin Axe, Strong Axe or Chainsaw only.",
     Default = false,
     Callback = function(value)
         _G.FarmActiveBig = value
@@ -915,7 +915,11 @@ Farm:AddToggle("", {
                     end
                 end
                 table.sort(trees, function(a, b) return (a.dist or math.huge) < (b.dist or math.huge) end)
-                return trees
+                local limited = {}
+                for i = 1, math.min(10, #trees) do
+                    table.insert(limited, trees[i])
+                end
+                return limited
             end
 
             local function atacarTreeBig()
@@ -927,10 +931,9 @@ Farm:AddToggle("", {
                 for _, tree in pairs(trees) do
                     local part = tree.arvore:FindFirstChild("Part")
                     if part then
-                        task.spawn(function()
-                            local args = {tree.arvore, arma, gerarID(), part.CFrame}
-                            pcall(function() evento:InvokeServer(unpack(args)) end)
-                        end)
+                        local args = {tree.arvore, arma, gerarID(), part.CFrame}
+                        pcall(function() evento:InvokeServer(unpack(args)) end)
+                        task.wait(0.2)
                     end
                 end
             end
