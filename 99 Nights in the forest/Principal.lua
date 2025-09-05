@@ -756,20 +756,22 @@ survival:AddParagraph({
 })
 
 local AxeValidos = {
-    ["Old Axe"] = true,
-    ["Good Axe"] = true,
-    ["Ice Axe"] = true,
-    ["Admin Axe"] = true,
-    ["Strong Axe"] = true
+    "Old Axe",
+    "Good Axe",
+    "Ice Axe",
+    "Admin Axe",
+    "Strong Axe"
 }
 
-_G.FarmActive = false
+_G.FarmActiveSmall = false
+_G.FarmActiveBig = false
 
 Farm:AddToggle("", {
     Title = "Auto Farm Small Trees",
+    Description = "Farm the nearest Small Trees using any valid axe.",
     Default = false,
     Callback = function(value)
-        _G.FarmActive = value
+        _G.FarmActiveSmall = value
 
         if value then
             local Players = game:GetService("Players")
@@ -784,11 +786,15 @@ Farm:AddToggle("", {
                 local inv = LocalPlayer:FindFirstChild("Inventory")
                 local char = workspace:FindFirstChild(LocalPlayer.Name)
                 local equipado = char and char:GetAttribute("Equipped")
-                if not equipado or not AxeValidos[equipado] then return nil end
-                if inv then
-                    local arma = inv:FindFirstChild(equipado)
-                    if arma then
-                        return arma
+                if not equipado then return nil end
+                for _, axe in ipairs(AxeValidos) do
+                    if equipado == axe then
+                        if inv then
+                            local arma = inv:FindFirstChild(equipado)
+                            if arma then
+                                return arma
+                            end
+                        end
                     end
                 end
                 return nil
@@ -797,15 +803,12 @@ Farm:AddToggle("", {
             local function getSmallTreesMaisProximas(limite)
                 local map = workspace:FindFirstChild("Map")
                 if not map then return {} end
-
                 local foliage = map:FindFirstChild("Foliage")
                 local landmarks = map:FindFirstChild("Landmarks")
                 local char = workspace:FindFirstChild(LocalPlayer.Name)
                 local hrp = char and char:FindFirstChild("HumanoidRootPart")
                 if not hrp then return {} end
-
                 local trees = {}
-
                 local function coletarArvores(pasta)
                     if not pasta then return end
                     for _, arvore in pairs(pasta:GetChildren()) do
@@ -818,46 +821,35 @@ Farm:AddToggle("", {
                         end
                     end
                 end
-
                 coletarArvores(foliage)
                 coletarArvores(landmarks)
-
-                table.sort(trees, function(a, b)
-                    return (a.dist or math.huge) < (b.dist or math.huge)
-                end)
-
+                table.sort(trees, function(a, b) return (a.dist or math.huge) < (b.dist or math.huge) end)
                 local resultado = {}
                 for i = 1, math.min(limite, #trees) do
                     table.insert(resultado, trees[i].arvore)
                 end
-
                 return resultado
             end
 
             local function atacarSmallTrees()
                 local trees = getSmallTreesMaisProximas(10)
                 if #trees == 0 then return end
-
                 local arma = getArmaValida()
                 if not arma then return end
-
                 local evento = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject")
-
                 for _, tree in pairs(trees) do
                     local part = tree:FindFirstChild("Part")
                     if part then
                         task.spawn(function()
                             local args = {tree, arma, gerarID(), part.CFrame}
-                            pcall(function()
-                                evento:InvokeServer(unpack(args))
-                            end)
+                            pcall(function() evento:InvokeServer(unpack(args)) end)
                         end)
                     end
                 end
             end
 
             task.spawn(function()
-                while _G.FarmActive do
+                while _G.FarmActiveSmall do
                     task.wait(0.1)
                     if LocalPlayer and LocalPlayer.Parent then
                         atacarSmallTrees()
@@ -866,4 +858,102 @@ Farm:AddToggle("", {
             end)
         end
     end
+})
+
+local contentSmall = ""
+for i, axe in ipairs(AxeValidos) do
+    if i == 1 then
+        contentSmall = axe
+    else
+        contentSmall = contentSmall .. ", " .. axe
+    end
+end
+
+Farm:AddParagraph({
+    Title = "Allowed Axes",
+    Content = "Small Trees can be farmed with: " .. contentSmall .. "."
+})
+
+Farm:AddToggle("", {
+    Title = "Auto Farm TreeBig",
+    Description = "Farm all TreeBig in Foliage using Admin Axe or Strong Axe only.",
+    Default = false,
+    Callback = function(value)
+        _G.FarmActiveBig = value
+
+        if value then
+            local Players = game:GetService("Players")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local LocalPlayer = Players.LocalPlayer
+
+            local function gerarID()
+                return "2_" .. LocalPlayer.UserId
+            end
+
+            local function getArmaValida()
+                local inv = LocalPlayer:FindFirstChild("Inventory")
+                local char = workspace:FindFirstChild(LocalPlayer.Name)
+                local equipado = char and char:GetAttribute("Equipped")
+                if equipado ~= "Admin Axe" and equipado ~= "Strong Axe" then return nil end
+                if inv then
+                    local arma = inv:FindFirstChild(equipado)
+                    if arma then return arma end
+                end
+                return nil
+            end
+
+            local function getTreeBigMaisProximas()
+                local map = workspace:FindFirstChild("Map")
+                if not map then return {} end
+                local foliage = map:FindFirstChild("Foliage")
+                if not foliage then return {} end
+                local char = workspace:FindFirstChild(LocalPlayer.Name)
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if not hrp then return {} end
+                local trees = {}
+                for _, arvore in pairs(foliage:GetChildren()) do
+                    if string.find(arvore.Name, "TreeBig") then
+                        local part = arvore:FindFirstChild("Part")
+                        if part and part.Position then
+                            local dist = (hrp.Position - part.Position).Magnitude
+                            table.insert(trees, {arvore = arvore, dist = dist})
+                        end
+                    end
+                end
+                table.sort(trees, function(a, b) return (a.dist or math.huge) < (b.dist or math.huge) end)
+                return trees
+            end
+
+            local function atacarTreeBig()
+                local trees = getTreeBigMaisProximas()
+                if #trees == 0 then return end
+                local arma = getArmaValida()
+                if not arma then return end
+                local evento = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject")
+                for _, tree in pairs(trees) do
+                    local part = tree.arvore:FindFirstChild("Part")
+                    if part then
+                        task.spawn(function()
+                            local args = {tree.arvore, arma, gerarID(), part.CFrame}
+                            pcall(function() evento:InvokeServer(unpack(args)) end)
+                        end)
+                    end
+                end
+            end
+
+            task.spawn(function()
+                while _G.FarmActiveBig do
+                    task.wait(0.1)
+                    if LocalPlayer and LocalPlayer.Parent then
+                        atacarTreeBig()
+                    end
+                end
+            end)
+        end
+    end
+})
+
+Farm:AddParagraph({
+    Title = "Allowed Axes",
+    Content = "TreeBig can only be farmed with: Admin Axe, Strong Axe."
 })
