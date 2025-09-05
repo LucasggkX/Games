@@ -136,15 +136,6 @@ local armasValidas = {
     ["Poison Spear"] = true
 }
 
-local AxeValidos = {
-    ["Old Axe"] = true,
-    ["Good Axe"] = true,
-    ["Ice Axe"] = true,
-    ["Admin Axe"] = true,
-    ["Strong Axe"] = true,
-	["Chainsaw"] = true
-}
-
 local itensEsp = {"Log", "Chair", "Biofuel", "Coal", "Fuel Canister", "Oil Barrel", "Revolver Ammo", "Rifle Ammo", "Shotgun Ammo", "Revolver", "Rifle", "Tactical Shotgun", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Elite Alien", "Wolf Corpse", "Alpha Wolf Corpse", "Bear Corpse", "Bolt", "Sheet Metal", "UFO Junk", "UFO Component", "Broken Fan", "Old Radio", "Broken Microwave", "Tyre", "Metal Chair", "Old Car Engine", "Washing Machine", "Cultist Experiment", "Cultist Prototype", "UFO Scrap"}
 local mobEsp = {"Bunny", "Wolf", "Alpha Wolf", "Bear", "Polar Bear", "Arctic Fox", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Alien Elite", "Mammoth"}
 
@@ -156,8 +147,6 @@ _G.TPSActive = false
 _G.InfJumpToggle = false
 _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
-_G.FarmActiveSmall = false
-_G.FarmActiveBig = false
 _G.aae = false
 
 local PlayerTab =    Window:AddTab({Title = "Player",   Icon = "user"})
@@ -755,6 +744,19 @@ survival:AddParagraph({
 	Title = "How to use?",
 	Content = "The first time it will bug\nHow to fix it?\nWhen you click the button for the first time\ngo to the campfire and click on one of the meats\nAfter that they will drop and cook\nFrom this moment on it will no longer bug\nIf it happens again just repeat this process."
 })
+
+
+local AxeValidos = {
+    ["Old Axe"] = true,
+    ["Good Axe"] = true,
+    ["Ice Axe"] = true,
+    ["Admin Axe"] = true,
+    ["Strong Axe"] = true,
+	["Chainsaw"] = true
+}
+
+_G.FarmActiveSmall = false
+_G.FarmActiveBig = false
 
 Farm:AddSection("Auto Farm Small Tree")
 
