@@ -824,7 +824,7 @@ Farm:AddToggle("", {
             end
 
             local function atacarSmallTrees()
-                local trees = getSmallTreesMaisProximas(10)
+                local trees = getSmallTreesMaisProximas(37)
                 if #trees == 0 then return end
                 local arma = getArmaValida()
                 if not arma then return end
@@ -917,7 +917,7 @@ Farm:AddToggle("", {
                 end
                 table.sort(trees, function(a, b) return (a.dist or math.huge) < (b.dist or math.huge) end)
                 local limited = {}
-                for i = 1, math.min(10, #trees) do
+                for i = 1, math.min(25, #trees) do
                     table.insert(limited, trees[i])
                 end
                 return limited
