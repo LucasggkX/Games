@@ -141,7 +141,8 @@ local AxeValidos = {
     ["Good Axe"] = true,
     ["Ice Axe"] = true,
     ["Admin Axe"] = true,
-    ["Strong Axe"] = true
+    ["Strong Axe"] = true,
+	["Chainsaw"] = true
 }
 
 local itensEsp = {"Log", "Chair", "Biofuel", "Coal", "Fuel Canister", "Oil Barrel", "Revolver Ammo", "Rifle Ammo", "Shotgun Ammo", "Revolver", "Rifle", "Tactical Shotgun", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Elite Alien", "Wolf Corpse", "Alpha Wolf Corpse", "Bear Corpse", "Bolt", "Sheet Metal", "UFO Junk", "UFO Component", "Broken Fan", "Old Radio", "Broken Microwave", "Tyre", "Metal Chair", "Old Car Engine", "Washing Machine", "Cultist Experiment", "Cultist Prototype", "UFO Scrap"}
@@ -887,7 +888,7 @@ Farm:AddToggle("", {
                 local inv = LocalPlayer:FindFirstChild("Inventory")
                 local char = workspace:FindFirstChild(LocalPlayer.Name)
                 local equipado = char and char:GetAttribute("Equipped")
-                if equipado ~= "Admin Axe" and equipado ~= "Strong Axe" then return nil end
+                if equipado ~= "Admin Axe" and equipado ~= "Strong Axe" and equipado ~= "Chainsaw" then return nil end
                 if inv then
                     local arma = inv:FindFirstChild(equipado)
                     if arma then return arma end
@@ -948,5 +949,5 @@ Farm:AddToggle("", {
 
 Farm:AddParagraph({
     Title = "Allowed Axes",
-    Content = "TreeBig can only be farmed with: Admin Axe, Strong Axe."
+    Content = "TreeBig can only be farmed with: Admin Axe, Strong Axe, Chainsaw."
 })
