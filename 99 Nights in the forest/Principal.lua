@@ -824,7 +824,7 @@ Farm:AddToggle("", {
             end
 
             local function atacarSmallTrees()
-                local trees = getSmallTreesMaisProximas(37)
+                local trees = getSmallTreesMaisProximas(40)
                 if #trees == 0 then return end
                 local arma = getArmaValida()
                 if not arma then return end
@@ -836,14 +836,14 @@ Farm:AddToggle("", {
                             local args = {tree, arma, gerarID(), part.CFrame}
                             pcall(function() evento:InvokeServer(unpack(args)) end)
                         end)
-                        task.wait(0.1)
+                        task.wait(0.25)
                     end
                 end
             end
 
             task.spawn(function()
                 while _G.FarmActiveSmall do
-                    task.wait(0.1)
+                    task.wait(0.25)
                     if LocalPlayer and LocalPlayer.Parent then
                         atacarSmallTrees()
                     end
@@ -936,14 +936,14 @@ Farm:AddToggle("", {
                             local args = {tree.arvore, arma, gerarID(), part.CFrame}
                             pcall(function() evento:InvokeServer(unpack(args)) end)
                         end)
-                        task.wait(0.1)
+                        task.wait(0.25)
                     end
                 end
             end
 
             task.spawn(function()
                 while _G.FarmActiveBig do
-                    task.wait(0.1)
+                    task.wait(0.25)
                     if LocalPlayer and LocalPlayer.Parent then
                         atacarTreeBig()
                     end
