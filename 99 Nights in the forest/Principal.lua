@@ -375,6 +375,13 @@ TPsTab:AddButton({
 	end
 })
 
+TPsTab:AddButton({
+	Title = "Teleport to anvil",
+	Description = "You must have unlocked the area and spawned the structure.",
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Map.Landmarks.ToolWorkshop.Functional.Podium:GetChildren()[3].CFrame + Vector3.new(0,30,0)
+	end
+})
 
 function wiki(nome)
     local c = 0
@@ -649,7 +656,7 @@ task.spawn(function()
 				Desp(mob)
 			end
 		end
-		task.wait(1)
+		task.wait(0.25)
 	end
 end)
 
@@ -689,31 +696,6 @@ function blm(nome, caminho, pos, extra)
 	end
 end
 
-function bl(nome, caminho)
-	local p = game.Players.LocalPlayer
-	local hrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
-	if not hrp then return end
-
-	for _, item in ipairs(workspace.Items:GetChildren()) do
-		if item.Name == nome then
-			local partes = string.split(caminho, ".")
-			local obj = item
-			for _, parte in ipairs(partes) do
-				obj = obj:FindFirstChild(parte)
-				if not obj then break end
-			end
-			if obj and obj:IsA("BasePart") then
-				obj.CFrame = hrp.CFrame + Vector3.new(math.random(-5,5), 0, math.random(-5,5))
-			end
-		end
-	end
-end
-
-function BringMeat()
-	bl("Cooked Steak", "Main")
-	bl("Cooked Morsel", "Meat")
-end
-
 function blmMeat()
 	blm("Steak", "Main", "-0, 6.5, 0", 0)
 	blm("Morsel", "Meat", "-0, 6.5, 0", 0)
@@ -728,7 +710,7 @@ local aguardando = false
 
 acm = survival:AddButton({
     Title = "Cook Meat",
-    Description = "After clicking, it cooks the meat and after 5 seconds teleports them to you",
+    Description = "After clicking, it cooks the meat ",
     Callback = function()
         if aguardando then return end
         aguardando = true
@@ -746,10 +728,6 @@ acm = survival:AddButton({
 
             acm:SetDesc("After clicking, it cooks the meat and after 5 seconds teleports them to you")
             aguardando = false
-        end)
-
-        task.delay(5, function()
-            BringMeat()
         end)
     end
 })
