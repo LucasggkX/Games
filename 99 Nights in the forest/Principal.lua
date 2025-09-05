@@ -172,7 +172,7 @@ local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
 local EspTab    =    Window:AddTab({Title = "Esp",      Icon = "crosshair"})
 local TPsTab    =    Window:AddTab({Title = "TPs",      Icon = "map"})
 local Combat    =    Window:AddTab({Title = "Combat",   Icon = "swords"})
-local Farm      =    Window:AddTab({Title = "Farm",     Icon = "farm"})
+local Farm      =    Window:AddTab({Title = "Farm",     Icon = "trees"})
 
 PlayerTab:AddSection("Speed settings")
 
