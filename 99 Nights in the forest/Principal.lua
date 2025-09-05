@@ -824,7 +824,7 @@ Farm:AddToggle("", {
             end
 
             local function atacarSmallTrees()
-                local trees = getSmallTreesMaisProximas(40)
+                local trees = getSmallTreesMaisProximas(20)
                 if #trees == 0 then return end
                 local arma = getArmaValida()
                 if not arma then return end
@@ -836,14 +836,14 @@ Farm:AddToggle("", {
                             local args = {tree, arma, gerarID(), part.CFrame}
                             pcall(function() evento:InvokeServer(unpack(args)) end)
                         end)
-                        task.wait(0.25)
+                        task.wait(0.15)
                     end
                 end
             end
 
             task.spawn(function()
                 while _G.FarmActiveSmall do
-                    task.wait(0.25)
+                    task.wait(0.15)
                     if LocalPlayer and LocalPlayer.Parent then
                         atacarSmallTrees()
                     end
@@ -917,7 +917,7 @@ Farm:AddToggle("", {
                 end
                 table.sort(trees, function(a, b) return (a.dist or math.huge) < (b.dist or math.huge) end)
                 local limited = {}
-                for i = 1, math.min(25, #trees) do
+                for i = 1, math.min(20, #trees) do
                     table.insert(limited, trees[i])
                 end
                 return limited
@@ -936,14 +936,14 @@ Farm:AddToggle("", {
                             local args = {tree.arvore, arma, gerarID(), part.CFrame}
                             pcall(function() evento:InvokeServer(unpack(args)) end)
                         end)
-                        task.wait(0.25)
+                        task.wait(0.15)
                     end
                 end
             end
 
             task.spawn(function()
                 while _G.FarmActiveBig do
-                    task.wait(0.25)
+                    task.wait(0.15)
                     if LocalPlayer and LocalPlayer.Parent then
                         atacarTreeBig()
                     end
