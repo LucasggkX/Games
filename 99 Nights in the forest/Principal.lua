@@ -148,6 +148,7 @@ _G.InfJumpToggle = false
 _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
 _G.aae = false
+_G.EspPlayer = false
 
 local PlayerTab =    Window:AddTab({Title = "Player",   Icon = "user"})
 local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
@@ -956,4 +957,148 @@ Farm:AddToggle("", {
 Farm:AddParagraph({
     Title = "Allowed Axes",
     Content = "TreeBig can only be farmed with: Admin Axe, Strong Axe, Chainsaw."
+})
+
+EspTab:AddToggle("", {
+    Title = "Players ESP",
+    Description = "Show a highlight and ESP with name and distance of all players.",
+    Default = false,
+    Callback = function(value)
+        _G.EspPlayer = value
+
+        local function criarESP(player)
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and not player.Character:FindFirstChild("PlayerESP") then
+                local highlight = Instance.new("Highlight")
+                highlight.Name = "PlayerESP"
+                highlight.FillTransparency = 0.7
+                highlight.OutlineTransparency = 0
+                highlight.Parent = player.Character
+
+                local billboard = Instance.new("BillboardGui")
+                billboard.Name = "PlayerESPBillboard"
+                billboard.Size = UDim2.new(0, 200, 0, 50)
+                billboard.Adornee = player.Character.HumanoidRootPart
+                billboard.AlwaysOnTop = true
+                billboard.Parent = player.Character
+
+                local text = Instance.new("TextLabel")
+                text.Size = UDim2.new(1, 0, 1, 0)
+                text.BackgroundTransparency = 1
+                text.TextColor3 = Color3.fromRGB(255, 255, 0)
+                text.TextStrokeTransparency = 0
+                text.Font = Enum.Font.SourceSansBold
+                text.TextScaled = true
+                text.Parent = billboard
+
+                task.spawn(function()
+                    while billboard.Parent and _G.EspPlayer do
+                        local localPlayer = game.Players.LocalPlayer
+                        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            local dist = (localPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+                            text.Text = player.Name .. " | " .. math.floor(dist) .. " studs"
+                        end
+                        task.wait(0.05)
+                    end
+                end)
+            end
+        end
+
+        local function removerESP(player)
+            if player.Character then
+                local esp = player.Character:FindFirstChild("PlayerESP")
+                if esp then esp:Destroy() end
+                local billboard = player.Character:FindFirstChild("PlayerESPBillboard")
+                if billboard then billboard:Destroy() end
+            end
+        end
+
+        if value then
+            for _, plr in pairs(game.Players:GetPlayers()) do
+                if plr ~= game.Players.LocalPlayer then
+                    criarESP(plr)
+                end
+            end
+            game.Players.PlayerAdded:Connect(function(plr)
+                if _G.EspPlayer and plr ~= game.Players.LocalPlayer then
+                    plr.CharacterAdded:Connect(function()
+                        task.wait(1)
+                        if _G.EspPlayer then
+                            criarESP(plr)
+                        end
+                    end)
+                end
+            end)
+            for _, plr in pairs(game.Players:GetPlayers()) do
+                plr.CharacterAdded:Connect(function()
+                    task.wait(1)
+                    if _G.EspPlayer then
+                        criarESP(plr)
+                    end
+                end)
+            end
+        else
+            for _, plr in pairs(game.Players:GetPlayers()) do
+                if plr ~= game.Players.LocalPlayer then
+                    removerESP(plr)
+                end
+            end
+        end
+    end
+})
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local SelectedPlayer = nil
+
+local Dropdown = TPsTab:AddDropdown("Dropdown", {
+    Title = "Teleport to Player",
+    Description = "Select a player to teleport to.",
+    Values = {},
+    Multi = false,
+    Default = nil,
+    Callback = function(value)
+        SelectedPlayer = value
+    end,
+})
+
+task.spawn(function()
+    while task.wait(0.1) do
+        local names = {}
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer then
+                table.insert(names, p.Name)
+            end
+        end
+        Dropdown:SetValues(names)
+        if SelectedPlayer and not Players:FindFirstChild(SelectedPlayer) then
+            Dropdown:SetValue(nil)
+            SelectedPlayer = nil
+        end
+    end
+end)
+
+TPsTab:AddButton({
+    Title = "Teleport",
+    Description = "Teleport to the selected player.",
+    Callback = function()
+        if SelectedPlayer then
+            local target = Players:FindFirstChild(SelectedPlayer)
+            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+            else
+                game:GetService("StarterGui"):SetCore("SendNotification", {
+                    Title = "Teleport Failed",
+                    Text = "Selected player is not available.",
+                    Duration = 3
+                })
+            end
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Teleport Failed",
+                Text = "No player selected.",
+                Duration = 3
+            })
+        end
+    end
 })
