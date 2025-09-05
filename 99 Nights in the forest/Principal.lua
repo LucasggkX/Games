@@ -137,24 +137,15 @@ local armasValidas = {
 }
 
 local AxeValidos = {
-    "Old Axe",
-    "Good Axe",
-    "Ice Axe",
-    "Admin Axe",
-    "Strong Axe"
+    ["Old Axe"] = true,
+    ["Good Axe"] = true,
+    ["Ice Axe"] = true,
+    ["Admin Axe"] = true,
+    ["Strong Axe"] = true
 }
 
-local itensEsp = {
-    "Log", "Chair", "Biofuel", "Coal", "Fuel Canister", "Oil Barrel",
-    "Revolver Ammo", "Rifle Ammo", "Shotgun Ammo", "Revolver", "Rifle", "Tactical Shotgun",
-    "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Elite Alien", "Wolf Corpse", "Alpha Wolf Corpse", "Bear Corpse",
-    "Bolt", "Sheet Metal", "UFO Junk", "UFO Component", "Broken Fan", "Old Radio", "Broken Microwave", "Tyre", "Metal Chair", "Old Car Engine", "Washing Machine",
-    "Cultist Experiment", "Cultist Prototype", "UFO Scrap"
-}
-
-
+local itensEsp = {"Log", "Chair", "Biofuel", "Coal", "Fuel Canister", "Oil Barrel", "Revolver Ammo", "Rifle Ammo", "Shotgun Ammo", "Revolver", "Rifle", "Tactical Shotgun", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Elite Alien", "Wolf Corpse", "Alpha Wolf Corpse", "Bear Corpse", "Bolt", "Sheet Metal", "UFO Junk", "UFO Component", "Broken Fan", "Old Radio", "Broken Microwave", "Tyre", "Metal Chair", "Old Car Engine", "Washing Machine", "Cultist Experiment", "Cultist Prototype", "UFO Scrap"}
 local mobEsp = {"Bunny", "Wolf", "Alpha Wolf", "Bear", "Polar Bear", "Arctic Fox", "Cultist", "Crossbow Cultist", "Juggernaut Cultist", "Alien", "Alien Elite", "Mammoth"}
-
 
 _G.WalkSpeedToggle = false
 _G.WalkSpeed = 50
@@ -166,6 +157,7 @@ _G.SuperJumpToggle = false
 _G.SuperJumpValue = 100
 _G.FarmActiveSmall = false
 _G.FarmActiveBig = false
+_G.aae = false
 
 local PlayerTab =    Window:AddTab({Title = "Player",   Icon = "user"})
 local survival  =    Window:AddTab({Title = "Survival", Icon = "heart"})
@@ -646,7 +638,6 @@ espdownMobs:OnChanged(function(val)
 	end
 end)
 
-_G.aae = false
 EspTab:AddToggle("", {
     Title = "Enable ESP", 
     Description = "Shows ESP automatically based on dropdown",
