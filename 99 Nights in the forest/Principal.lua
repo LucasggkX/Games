@@ -752,7 +752,7 @@ local AxeValidos = {
     ["Ice Axe"] = true,
     ["Admin Axe"] = true,
     ["Strong Axe"] = true,
-	["Chainsaw"] = true
+    ["Chainsaw"] = true
 }
 
 _G.FarmActiveSmall = false
@@ -781,13 +781,11 @@ Farm:AddToggle("", {
                 local char = workspace:FindFirstChild(LocalPlayer.Name)
                 local equipado = char and char:GetAttribute("Equipped")
                 if not equipado then return nil end
-                for _, axe in ipairs(AxeValidos) do
-                    if equipado == axe then
-                        if inv then
-                            local arma = inv:FindFirstChild(equipado)
-                            if arma then
-                                return arma
-                            end
+                if AxeValidos[equipado] then
+                    if inv then
+                        local arma = inv:FindFirstChild(equipado)
+                        if arma then
+                            return arma
                         end
                     end
                 end
@@ -838,6 +836,7 @@ Farm:AddToggle("", {
                             local args = {tree, arma, gerarID(), part.CFrame}
                             pcall(function() evento:InvokeServer(unpack(args)) end)
                         end)
+                        task.wait(0.1)
                     end
                 end
             end
@@ -855,8 +854,8 @@ Farm:AddToggle("", {
 })
 
 local contentSmall = ""
-for i, axe in ipairs(AxeValidos) do
-    if i == 1 then
+for axe, _ in pairs(AxeValidos) do
+    if contentSmall == "" then
         contentSmall = axe
     else
         contentSmall = contentSmall .. ", " .. axe
@@ -933,9 +932,11 @@ Farm:AddToggle("", {
                 for _, tree in pairs(trees) do
                     local part = tree.arvore:FindFirstChild("Part")
                     if part then
-                        local args = {tree.arvore, arma, gerarID(), part.CFrame}
-                        pcall(function() evento:InvokeServer(unpack(args)) end)
-                        task.wait(0.2)
+                        task.spawn(function()
+                            local args = {tree.arvore, arma, gerarID(), part.CFrame}
+                            pcall(function() evento:InvokeServer(unpack(args)) end)
+                        end)
+                        task.wait(0.1)
                     end
                 end
             end
