@@ -1,5 +1,5 @@
 -- Script gerado automaticamente para recriar o mapa
-
+return { CriarMapa = function()
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
@@ -31060,4 +31060,5 @@ p.CanCollide = true
 p.Material = Enum.Material.Plastic
 p.Color = Color3.fromRGB(163,162,165)
 p.Parent = workspace
-
+end
+}
