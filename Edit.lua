@@ -685,7 +685,7 @@ _G.setupGuis = function()
     local espToggle = createToggle("ESP Best", 220)
     local upstairsToggle = createToggle("Upstairs", 265)
     local semiInvisibleToggle = createToggle("Semi Invisible", 310)
-    local FpsDev = createToggle("Fps Devourer", 355)
+    local FpsDev = createToggle("Fps Devourer", 400)
 
     FpsDev.MouseButton1Click:Connect(function()
       _G.FpsDev = not _G.FpsDev
@@ -1175,27 +1175,31 @@ task.spawn(function()
     end
 end)
 
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
 task.spawn(function()
-    local Players = game:GetService("Players")
-    local player = Players.LocalPlayer
-    while _G.FpsDev do
-        local character = player.Character
-        local backpack = player:FindFirstChild("Backpack")
-        if character and backpack then
-            local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-            local bat = backpack:FindFirstChild("Bat")
-            local medusa = backpack:FindFirstChild("Medusa's Head")
-            if bat and humanoid then
-                pcall(function() humanoid:EquipTool(bat) end)
-                task.wait(0.1)
-                if humanoid then humanoid:UnequipTools() end
+    while true do
+        if _G.FpsDev then
+            local character = player.Character
+            local backpack = player:FindFirstChild("Backpack")
+            if character and backpack then
+                local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+                local bat = backpack:FindFirstChild("Bat")
+                local medusa = backpack:FindFirstChild("Medusa's Head")
+                if humanoid and bat then
+                    pcall(function() humanoid:EquipTool(bat) end)
+                    task.wait(0.1)
+                end
+                if humanoid and medusa then
+                    pcall(function() humanoid:EquipTool(medusa) end)
+                    task.wait(0.1)
+                    if humanoid then humanoid:UnequipTools() end
+                end
             end
-            if medusa and humanoid then
-                pcall(function() humanoid:EquipTool(medusa) end)
-                task.wait(0.1)
-                if humanoid then humanoid:UnequipTools() end
-            end
+            task.wait(0.01)
+        else
+            task.wait(0.1)
         end
-        task.wait(0.01)
     end
 end)
