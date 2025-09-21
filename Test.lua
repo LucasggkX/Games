@@ -5,8 +5,7 @@ local function removeAllAccessories()
     for _, plr in ipairs(Players:GetPlayers()) do
         local character = plr.Character
         if character then
-            local children = character:GetChildren()
-            for _, item in ipairs(children) do
+            for _, item in ipairs(character:GetChildren()) do
                 if item:IsA("Accessory") or item:IsA("LayeredClothing") or item:IsA("Shirt") or item:IsA("ShirtGraphic") or item:IsA("Pants") or item:IsA("BodyColors") or item:IsA("CharacterMesh") then
                     pcall(function() item:Destroy() end)
                 end
@@ -15,16 +14,22 @@ local function removeAllAccessories()
     end
 end
 
-local function equip(plr)
+local function equipSome(plr)
     local character = plr.Character
     local backpack = plr:FindFirstChild("Backpack")
     if character and backpack then
-        local tool = backpack:FindFirstChild("Bat")
-        if tool then tool.Parent = character end
+        local count = 0
+        for _, tool in ipairs(backpack:GetChildren()) do
+            if tool:IsA("Tool") then
+                tool.Parent = character
+                count += 1
+                if count >= 3 then break end
+            end
+        end
     end
 end
 
-local function unequip(plr)
+local function unequipAll(plr)
     local character = plr.Character
     if character then
         local humanoid = character:FindFirstChildWhichIsA("Humanoid")
@@ -35,7 +40,7 @@ local function unequip(plr)
 end
 
 local function setupPlayer(plr)
-    plr.CharacterAdded:Connect(function(char)
+    plr.CharacterAdded:Connect(function()
         task.wait(0.2)
         removeAllAccessories()
     end)
@@ -54,11 +59,11 @@ task.spawn(function()
     while true do
         if _G.FpsDev then
             for _, plr in ipairs(Players:GetPlayers()) do
-                equip(plr)
+                equipSome(plr)
             end
             task.wait(0.05)
             for _, plr in ipairs(Players:GetPlayers()) do
-                unequip(plr)
+                unequipAll(plr)
             end
             task.wait(0.05)
         else
