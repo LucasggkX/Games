@@ -5,7 +5,8 @@ local function removeAllAccessories()
     for _, plr in ipairs(Players:GetPlayers()) do
         local character = plr.Character
         if character then
-            for _, item in ipairs(character:GetChildren()) do
+            local children = character:GetChildren()
+            for _, item in ipairs(children) do
                 if item:IsA("Accessory") or item:IsA("LayeredClothing") or item:IsA("Shirt") or item:IsA("ShirtGraphic") or item:IsA("Pants") or item:IsA("BodyColors") or item:IsA("CharacterMesh") then
                     pcall(function() item:Destroy() end)
                 end
@@ -33,19 +34,21 @@ local function unequip(plr)
     end
 end
 
-Players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function()
+local function setupPlayer(plr)
+    plr.CharacterAdded:Connect(function(char)
         task.wait(0.2)
         removeAllAccessories()
     end)
-end)
+    if plr.Character then
+        task.defer(removeAllAccessories)
+    end
+end
 
 for _, plr in ipairs(Players:GetPlayers()) do
-    plr.CharacterAdded:Connect(function()
-        task.wait(0.2)
-        removeAllAccessories()
-    end)
+    setupPlayer(plr)
 end
+
+Players.PlayerAdded:Connect(setupPlayer)
 
 task.spawn(function()
     while true do
